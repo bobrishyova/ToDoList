@@ -1,26 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+class ToDoApp extends React.Component {
+  state = {
+    items: [],
+    text: '',
+  }
+
+  saveInputText = (event) => this.setState({
+    text: event.target.value,
+  })
+
+  addItem = () => {
+    this.setState((state) => ({
+      items: [
+        ...state.items,
+        {
+          text: state.text,
+          id: Date.now(),
+        }
+      ],
+      text: '',
+    })
+    )
+  }
+
+  render() {
+    return (
+      <div className="toDo">
+        <form>
+          <input type="text" value={this.state.text} placeholder="Task" onChange={this.saveInputText} />
+          <button id="button" type="button" onClick={this.addItem}>Add</button>
+        </form>
+        <ul>
+          {this.state.items.map((item) => (
+            <li key={item.id}>{item.text}</li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
 }
 
-export default App;
+
+export default ToDoApp

@@ -20,9 +20,11 @@ code {
 
 .toDo {
   background-color: #B0C4DE;
-  width: 500px;
+  width: 420px;
   height: 500px;
-  margin: 40px auto;
+  margin: 40px 0 0 40px;
+  border-radius: 20px;
+  width: 380px;
 }
 
 .task {
@@ -30,8 +32,43 @@ code {
   align-items: center;
 }
 
+.taskWithMoving {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  margin: 0 20px 10px 20px;
+  padding: 0 10px 0 10px;
+}
+
+.buttonMovingTask {
+  background-color: transparent;
+  border: 0;
+  font-size: 22px;
+  position: relative;
+}
+
+.movingTask {
+  position: absolute;
+  background-color: #696969;
+  right: 20px;
+  top: -11px;
+  padding: 11px;
+  border-radius: 10px;
+  z-index: 1;
+}
+
+.columnNameToMoveTask {
+  background-color: transparent;
+  color: #FFFFFF;
+  border: 0;
+  font-size: 18px;
+  cursor: pointer;
+}
+
 .checkbox {
-  margin: 10px 5px 10px 25px;
+  margin: 10px 5px 10px 0;
 }
 
 .text {
@@ -42,17 +79,19 @@ code {
 .button {
   margin: 10px;
   border: 0;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
   font-size: 18px;
+  background-color: transparent;
+}
+
+.toDoForm {
+  margin-left: 20px;
 }
 
 .toDoForm input {
   width: 200px;
   height: 50px;
   border: 0;
-  margin: 20px;
+  margin: 0 20px 20px 0;
   padding: 0 20px;
   background-color: #DCDCDC;
   border-radius: 10px;
@@ -71,6 +110,7 @@ code {
   cursor: pointer;
   border: 0;
   color: #000000;
+  margin: 0 20px 20px 0;
 }
 
 .toDoForm button:active {
@@ -80,4 +120,68 @@ code {
 
 .toDoForm button:focus {
   outline: none;
+}
+
+.addForm {
+  display: flex;
+  justify-content: flex-start;
+}
+
+#addColumnButton {
+  margin: 40px 20px 20px 40px;
+  font-size: 18px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 0;
+  background-color: #DCDCDC;
+  width: 200px;
+  cursor: pointer;
+}
+
+#addColumnButton:active {
+  background-color: #A9A9A9;
+}
+
+#columnWithName {
+  display: none;
+  flex-direction: column;
+  margin: 0 20px 0 40px;
+}
+
+.columnName {
+  width: 160px;
+  height: 50px;
+  border: 0;
+  margin-bottom: 10px;
+  padding: 0 20px;
+  background-color: #DCDCDC;
+  border-radius: 10px;
+  font-size: 18px;
+}
+
+.addColumnButtonWithName {
+  font-size: 18px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 0;
+  background-color: #DCDCDC;
+  width: 150px;
+  cursor: pointer;
+}
+
+.addColumnButtonWithName:active {
+  background-color: #A9A9A9;
+}
+
+.deleteColumn {
+  background-color: transparent;
+  border: 0;
+  font-size: 18px;
+}
+
+.DeleteColumnAndAddName {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 20px 10px 20px;
+  font-size: 18px;
 }

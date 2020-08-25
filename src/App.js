@@ -1,24 +1,33 @@
 import React from 'react'
 
-
 const DoneTask = {
   textDecoration: "line-through",
 }
 
 class ToDoApp extends React.Component {
-  state = {
-    items: [],
-    text: '',
-    columns: [],
-    columnName: '',
-    currentItem: {},
-    currentColumn: {},
+  constructor(props) {
+    super(props)
+    this.state = {
+      items: [],
+      text: '',
+      columns: [],
+      columnName: '',
+      currentItem: {},
+      currentColumn: {},
+    }
+    this.wrapperRef = React.createRef()
   }
 
   getCurrentItem = (item) => () => {
-    this.setState({
-      currentItem: item,
-    })
+    if (item.id === this.state.currentItem.id) {
+      this.setState({
+        currentItem: {},
+      })
+    } else {
+      this.setState({
+        currentItem: item,
+      })
+    }
   }
 
   getCurrentColum = (currentColumn) => () => {
@@ -125,8 +134,24 @@ class ToDoApp extends React.Component {
     }
   }
 
+  componentDidMount() {
+    document.addEventListener('mousedown', this.handleClickOutside)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.handleClickOutside)
+  }
+
+  handleClickOutside = (event) => {
+    if (this.wrapperRef && this.wrapperRef.current && !this.wrapperRef.current.contains(event.target)) {
+      this.setState({
+        currentItem: {}
+      })
+    } console.log('ssds', this.wrapperRef.current)
+  } 
+ 
+
   movingTaskToAnotherColumn = (nextColumn, currentColumn) => (event) => {
-    event.stopPropagation()
     const moveToColumn = this.state.columns.map((column) => {
       if (currentColumn.id === column.id) {
         return {
@@ -177,17 +202,17 @@ class ToDoApp extends React.Component {
                   <p className="text" style={item.done ? DoneTask : {}}>{item.text}</p>
                   <button className="button" onClick={this.deleteTask(item.id)}>&#128465;</button>
                 </div>
-                <div>
+                <div ref={this.wrapperRef}>
                   <button className="buttonMovingTask" type="button" onClick={this.getCurrentItem(item)}>
                     &#8942;
                     {item.id === this.state.currentItem.id && (
                       <div className="movingTask">
                         {this.state.columns.map((movingColumn) => (
-                          <React.Fragment key={movingColumn.id}>
+                          <div key={movingColumn.id}>
                             {movingColumn.id !== column.id && (
                               <button className="columnNameToMoveTask" onClick={this.movingTaskToAnotherColumn(movingColumn, column)}>{movingColumn.name}</button>
                             )}
-                          </React.Fragment>
+                          </div>
                         ))}
                       </div>
                     )}

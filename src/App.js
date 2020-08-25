@@ -205,7 +205,7 @@ class ToDoApp extends React.Component {
                 <div ref={this.wrapperRef}>
                   <button className="buttonMovingTask" type="button" onClick={this.getCurrentItem(item)}>
                     &#8942;
-                    {item.id === this.state.currentItem.id && (
+                    {item.id === this.state.currentItem.id && this.state.columns.length > 1 && (
                       <div className="movingTask">
                         {this.state.columns.map((movingColumn) => (
                           <div key={movingColumn.id}>

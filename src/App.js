@@ -1,112 +1,92 @@
-import React from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
+import Column from './components/Column'
 
 const DoneTask = {
   textDecoration: "line-through",
 }
 
-class ToDoApp extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      items: [],
-      text: '',
-      columns: [],
-      columnName: '',
-      currentItem: {},
-      currentColumn: {},
-    }
-    this.wrapperRef = React.createRef()
-  }
+const ToDoApp = () => {
+  const [text, setText] = useState('')
+  const [columns, setColumns] = useState([])
+  const [columnName, setColumnName] = useState('')
+  const [currentItem, setCurrentItem] = useState({})
+  const [currentColumn, setCurrentColumn] = useState({})
+  const wrapperRef = useRef(null)
 
-  getCurrentItem = (item) => () => {
-    if (item.id === this.state.currentItem.id) {
-      this.setState({
-        currentItem: {},
-      })
+  const getCurrentItem = useCallback((item) => () => {
+    if (item.id === currentItem.id) {
+      setCurrentItem({})
     } else {
-      this.setState({
-        currentItem: item,
-      })
+      setCurrentItem(item)
     }
-  }
+  }, [currentItem, setCurrentItem])
 
-  getCurrentColum = (currentColumn) => () => {
-    this.setState({
-      currentColumn,
-    })
-  }
+  const getCurrentColum = useCallback((selectedColumn) => () => {
+    setCurrentColumn(selectedColumn)
+  }, [setCurrentColumn])
 
-  addColumn = () => {
-    if (this.state.columnName.length === 0) {
+  const addColumn = useCallback(() => {
+    if (columnName.length === 0) {
       return null
     }
-    this.setState((state) => ({
-      columns: [
-        ...state.columns, 
-        {
-          id: Date.now(),
-          name: state.columnName,
-          items: [],
-        }
-      ],
-      columnName: '',
-    })
-    )
-  }
+    setColumns([
+      ...columns,
+      {
+        id: Date.now(),
+        name: columnName,
+        items: [],
+      }
+    ])
+    setColumnName('')
+  }, [columnName, columns, setColumns, setColumnName])
 
-  saveInputText = (event) => this.setState({
-    text: event.target.value,
-  })
+  const saveInputText = useCallback((event) => (
+    setText(event.target.value)
+  ), [setText])
+    
+  const saveInputName = useCallback((event) => (
+    setColumnName(event.target.value)
+  ), [setColumnName])
 
-  saveInputName = (event) => this.setState({
-    columnName: event.target.value,
-  })
-
-  addItem = (currentColumnId) => () => {
-    if (this.state.text.length === 0) {
+  const addItem = useCallback((currentColumnId) => () => {
+    if (text.length === 0) {
       return null
     }
-    const newColumns = this.state.columns.map((column) => {
+    const newColumns = columns.map((column) => {
       if (currentColumnId === column.id) {
         return {
           ...column,
           items: [
             ...column.items,
             {
-              text: this.state.text,
+              text,
               id: Date.now(),
-              done: false,
+              done: false, 
             }
           ],
         }
       }
       return column
     })
-    this.setState({
-      columns: newColumns,
-      text: '',
-    })
-  }
+    setColumns(newColumns)
+    setText('')
+  }, [text, columns, setColumns, setText])
 
-  deleteTask = (id) => () => {
-    const filteredItems = this.state.columns.map((column) => ({
+  const deleteTask = useCallback((id) => () => {
+    const filteredItems = columns.map((column) => ({
       ...column,
       items: column.items.filter((item) => item.id !== id),
     }))
-    this.setState({
-      columns: filteredItems,
-    })
-  }
+    setColumns(filteredItems)
+  }, [columns, setColumns])
 
-  deleteColumn = (id) => () => {
-    const filteredColumns = this.state.columns.filter((column) => column.id !== id)
-    this.setState({
-      columns: filteredColumns,
-    })
-  }
+  const deleteColumn = useCallback((id) => () => {
+    const filteredColumns = columns.filter((column) => column.id !== id)
+    setColumns(filteredColumns)
+  }, [columns, setColumns])
 
-  toggleCheckbox = (currentItem) => () => {
-    const newItems = this.state.columns.map((column) => ({
+  const toggleCheckbox = useCallback((currentItem) => () => {
+    const newItems = columns.map((column) => ({
       ...column,
       items: column.items.map((item) => {
         if (currentItem.id === item.id) {
@@ -118,45 +98,26 @@ class ToDoApp extends React.Component {
         return item
       })
     }))
-    this.setState({
-      columns: newItems,
-    })
-  }
+    setColumns(newItems)
+  }, [columns, setColumns])
 
-  viewColumnInput = () => {
-    document.getElementById("columnWithName").style.display = "flex";
-  }
+  const viewColumnInput = useCallback(() => {
+    document.getElementById("columnWithName").style.display = "flex"
+  }, [])
 
-  handleKeyPressAddColumn = (event) => {
+  const handleKeyPressAddColumn = useCallback((event) => {
     if (event.key === 'Enter') {
       event.preventDefault()
-      this.addColumn()
+      addColumn()
     }
-  }
+  }, [addColumn])
 
-  componentDidMount() {
-    document.addEventListener('mousedown', this.handleClickOutside)
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('mousedown', this.handleClickOutside)
-  }
-
-  handleClickOutside = (event) => {
-    if (this.wrapperRef && this.wrapperRef.current && !this.wrapperRef.current.contains(event.target)) {
-      this.setState({
-        currentItem: {}
-      })
-    } console.log('ssds', this.wrapperRef.current)
-  } 
- 
-
-  movingTaskToAnotherColumn = (nextColumn, currentColumn) => (event) => {
-    const moveToColumn = this.state.columns.map((column) => {
+  const movingTaskToAnotherColumn = useCallback((nextColumn, currentColumn) => () => {
+    const moveToColumn = columns.map((column) => {
       if (currentColumn.id === column.id) {
         return {
           ...column,
-          items: column.items.filter((item) => this.state.currentItem.id !== item.id),
+          items: column.items.filter((item) => currentItem.id !== item.id),
         }
       }
       if (nextColumn.id === column.id) {
@@ -164,75 +125,83 @@ class ToDoApp extends React.Component {
           ...column,
           items: [
             ...column.items,
-            this.state.currentItem,
+            currentItem,
           ],
         }
       }
       return column
     })
-    this.setState({
-      columns: moveToColumn,
-    })
-  }
+    setColumns(moveToColumn)
+  }, [currentItem, columns, setColumns])
 
-  render() {
-    return (
-      <div className="addForm">
-        {this.state.columns.map((column) => (
-          <div key={column.id} className="toDo">
-            <div className="DeleteColumnAndAddName">
-              <p>{column.name}</p>
-              <button className="deleteColumn" type="button" onClick={this.deleteColumn(column.id)}>&#10006;</button>
-            </div>
-            <div className="toDoForm">
-              <input
-                type="text" value={column.id === this.state.currentColumn.id ? this.state.text : ''}
-                placeholder="Task"
-                onChange={this.saveInputText}
-                onFocus={this.getCurrentColum(column)}
-              />
-              <button id="button" type="button" onClick={this.addItem(column.id)}>Add</button>
-            </div>
-            {column.items.map((item) => (
-              <div key={item.id} className="taskWithMoving">
-                <div className="task">
-                  <div className="checkbox">
-                    <input type="checkbox" checked={item.done} onChange={this.toggleCheckbox(item)} />
-                  </div>
-                  <p className="text" style={item.done ? DoneTask : {}}>{item.text}</p>
-                  <button className="button" onClick={this.deleteTask(item.id)}>&#128465;</button>
-                </div>
-                <div ref={this.wrapperRef}>
-                  <button className="buttonMovingTask" type="button" onClick={this.getCurrentItem(item)}>
-                    &#8942;
-                    {item.id === this.state.currentItem.id && this.state.columns.length > 1 && (
-                      <div className="movingTask">
-                        {this.state.columns.map((movingColumn) => (
-                          <div key={movingColumn.id}>
-                            {movingColumn.id !== column.id && (
-                              <button className="columnNameToMoveTask" onClick={this.movingTaskToAnotherColumn(movingColumn, column)}>{movingColumn.name}</button>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        ))}
-        <div>
-          <button id="addColumnButton" type="button" onMouseDown={this.viewColumnInput}><b>+</b> Add another column </button>
-          <div id="columnWithName">
-            <input type="text" value={this.state.columnName} onKeyPress={this.handleKeyPressAddColumn} onChange={this.saveInputName} className="columnName" placeholder="Сolumn's name" />
-            <button type="button" className="addColumnButtonWithName" onClick={this.addColumn}>Add column</button>
-          </div>
+  const handleClickOutside = useCallback((event) => {
+    if (
+      wrapperRef
+      && wrapperRef.current
+      && !wrapperRef.current.contains(event.target)
+      && !event.target.closest('.notClickOutside')
+    ) {
+      setCurrentItem({})
+    }
+  }, [wrapperRef, setCurrentItem])
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
+
+  return (
+    <div className="addForm">
+      {columns.map((column) => (
+        <Column
+          key={column.id}
+          column={column}
+          deleteColumn={deleteColumn}
+          currentColumn={currentColumn}
+          text={text}
+          saveInputText={saveInputText}
+          getCurrentColum={getCurrentColum}
+          addItem={addItem}
+          movingTaskToAnotherColumn={movingTaskToAnotherColumn}
+          toggleCheckbox={toggleCheckbox}
+	        DoneTask={DoneTask}
+	        deleteTask={deleteTask}
+          getCurrentItem={getCurrentItem}
+          currentItem={currentItem}
+          wrapperRef={wrapperRef}
+          columns={columns}
+        />
+      ))}
+      <div>
+        <button 
+          id="addColumnButton" 
+          type="button" 
+          onMouseDown={viewColumnInput}
+        >
+          <b>+</b> Add another column 
+        </button>
+        <div id="columnWithName">
+          <input 
+            value={columnName} 
+            type="text" 
+            onKeyPress={handleKeyPressAddColumn} 
+            onChange={saveInputName} 
+            className="columnName" 
+            placeholder="Сolumn's name" 
+          />
+          <button 
+            type="button" 
+            className="addColumnButtonWithName" 
+            onClick={addColumn}
+          >
+            Add column
+          </button>
         </div>
       </div>
-    )
-  }
+    </div>
+  )
 }
-
 
 export default ToDoApp

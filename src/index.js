@@ -1,13 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import ToDoApp from './App';
+import App from './App'
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-  <div>
-    <ToDoApp />
-  </div>,
+  <App />,
   document.getElementById('root')
 );
 

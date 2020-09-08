@@ -1,14 +1,14 @@
 import React from 'react'
-import ToDoApp from './containers/ToDoApp'
+import ToDoApp from './containers/container'
 import store from './store'
 import { Provider } from 'react-redux'
 
-export default class App extends React.Component {
-  render() {
-    return(
-      <Provider store={store}>
-        <ToDoApp />
-      </Provider>
-    )
-  }
+ const App = () => {
+  return (
+    <Provider store={store}>
+      <ToDoApp />
+    </Provider>
+  )
 }
+
+export default App

@@ -1,0 +1,4 @@
+export const SET_COLUMN = 'SET_COLUMN'
+export const SET_CURRENT_ITEM = 'SET_CURRENT_ITEM'
+export const SET_CURRENT_COLUMN = 'SET_CURRENT_COLUMN'
+

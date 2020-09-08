@@ -5,41 +5,44 @@ const DoneTask = {
   textDecoration: "line-through",
 }
 
-const ToDoApp = (props) => {
-	// console.log('asdfasdf', props)
+const ToDoApp = ({
+	columns,
+	setColumn,
+	currentItem,
+	setCurrentItem,
+	currentColumn,
+	setCurrentColumn,
+}) => {
   const [text, setText] = useState('')
-  const [columns, setColumns] = useState([])
   const [columnName, setColumnName] = useState('')
-  const [currentItem, setCurrentItem] = useState({})
-  const [currentColumn, setCurrentColumn] = useState({})
   const wrapperRef = useRef(null)
 
   const getCurrentItem = useCallback((item) => () => {
     if (item.id === currentItem.id) {
-      setCurrentItem({})
+			setCurrentItem({})
     } else {
-      setCurrentItem(item)
+			setCurrentItem(item)
     }
   }, [currentItem, setCurrentItem])
 
   const getCurrentColum = useCallback((selectedColumn) => () => {
-    setCurrentColumn(selectedColumn)
+		setCurrentColumn(selectedColumn)
   }, [setCurrentColumn])
 
   const handleAddColumn = useCallback(() => {
     if (columnName.length === 0) {
       return null
     }
-    setColumns([
-      ...columns,
-      {
-        id: Date.now(),
+		setColumn([
+			...columns,
+			{
+				id: Date.now(),
         name: columnName,
         items: [],
-      }
-    ])
+			}
+		])
     setColumnName('')
-  }, [columnName, columns, setColumns, setColumnName])
+  }, [columnName, columns, setColumn])
 
   const saveInputText = useCallback((event) => (
     setText(event.target.value)
@@ -69,22 +72,22 @@ const ToDoApp = (props) => {
       }
       return column
     })
-    setColumns(newColumns)
+		setColumn(newColumns)
     setText('')
-  }, [text, columns, setColumns, setText])
+  }, [text, columns, setText, setColumn])
 
   const deleteTask = useCallback((id) => () => {
     const filteredItems = columns.map((column) => ({
       ...column,
       items: column.items.filter((item) => item.id !== id),
     }))
-    setColumns(filteredItems)
-  }, [columns, setColumns])
+		setColumn(filteredItems)
+  }, [columns, setColumn])
 
   const deleteColumn = useCallback((id) => () => {
     const filteredColumns = columns.filter((column) => column.id !== id)
-    setColumns(filteredColumns)
-  }, [columns, setColumns])
+		setColumn(filteredColumns)
+  }, [columns, setColumn])
 
   const toggleCheckbox = useCallback((currentItem) => () => {
     const newItems = columns.map((column) => ({
@@ -99,8 +102,8 @@ const ToDoApp = (props) => {
         return item
       })
     }))
-    setColumns(newItems)
-  }, [columns, setColumns])
+		setColumn(newItems)
+  }, [columns, setColumn])
 
   const viewColumnInput = useCallback(() => {
     document.getElementById("columnWithName").style.display = "flex"
@@ -132,8 +135,8 @@ const ToDoApp = (props) => {
       }
       return column
     })
-    setColumns(moveToColumn)
-  }, [currentItem, columns, setColumns])
+		setColumn(moveToColumn)
+  }, [currentItem, columns, setColumn])
 
   const handleClickOutside = useCallback((event) => {
     if (

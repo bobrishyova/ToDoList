@@ -1,3 +1,3 @@
-import Column from './component'
+import Column from './container'
 
 export default Column

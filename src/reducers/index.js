@@ -1,8 +1,6 @@
 import { combineReducers } from 'redux'
-import columns from './columns'
-import test from './test'
+import toDoApp from './toDoApp'
 
 export default combineReducers({
-    columns,
-    test,
+	toDoApp,
 })

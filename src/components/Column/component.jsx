@@ -13,10 +13,10 @@ const Column = ({
 	DoneTask,
 	deleteTask,
 	getCurrentItem,
-	currentItem,
+  currentItem,
 	wrapperRef,
 	columns,
-	movingTaskToAnotherColumn,
+  movingTaskToAnotherColumn,
 }) => {
   return (
     <div className="toDo">
